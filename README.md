@@ -30,9 +30,10 @@ Each line of the dataset will be converted to structured data which can be impor
 
 The resultset file looks like this. In the default configuration new lines get the same date and time stamp and sender name as the previous line:
 ```shell
-Date and Time|Date|Time|Name|Message|
-2019-02-21 09:09|2019-02-21|09:09| Joe|Wow what an amazing chat!
-2019-02-21 09:10|2019-02-21|09:10| Dom|I agree, it is amazing!
-2019-02-21 09:12|2019-02-21|09:12| Joe|You're the best!
-2019-02-21 09:12|2019-02-21|09:12| Dom|No, you are the best!
+datetime|name|message|
+2019-02-21 09:09| Joe|Wow what an amazing chat!
+2019-02-21 09:10| Dom|I agree, it is amazing!
+2019-02-21 09:12| Joe|You're the best!
+2019-02-21 09:12| Dom|No, you are the best!
+
 ```

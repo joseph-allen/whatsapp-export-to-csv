@@ -145,12 +145,6 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
     # Store the number of lines of the input file
     line_count = 0
 
-    if verbose:
-        print("Verbosity turned on")
-
-    if debug:
-        print("Debug turned on")
-
     try:
         # Count the number of total lines
         with io.open(filename, "r", encoding="utf-8") as file:
@@ -175,7 +169,7 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
         print("Open export file " + resultset[0])
 
     # Define export file header
-    header = ['Date and Time', 'Date', 'Time', 'Name', 'Message']
+    header = ['datetime', 'name', 'message']
 
     # Select export formats
     if str(resultset[0]).endswith('.csv'):
@@ -185,7 +179,7 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
 
         # Write headers
         csv.write(header[0] + '|' + header[1] + '|' + header[2] +
-                  '|' + header[3] + '|' + header[4] + '|' + '\n')
+                  '|' + '\n')
 
     elif str(resultset[0]).endswith('.ods'):
         wb = xlwt.Workbook()
@@ -194,8 +188,6 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
         ws.write(0, 0, header[0])
         ws.write(0, 1, header[1])
         ws.write(0, 2, header[2])
-        ws.write(0, 3, header[3])
-        ws.write(0, 4, header[4])
 
         ws_counter = 1
 
@@ -209,8 +201,8 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
 
             # Write to .csv file
             if str(resultset[0]).endswith('.csv'):
-                csv.write(dataset[1] + ' ' + dataset[2] + '|' + dataset[1] +
-                          '|' + dataset[2] + '|' + dataset[3] + '|' + dataset[4] + '\n')
+                csv.write(dataset[1] + ' ' + dataset[2] +
+                          '|' + dataset[3] + '|' + dataset[4] + '\n')
 
             # Write to .ods file
             elif str(resultset[0]).endswith('.ods'):
