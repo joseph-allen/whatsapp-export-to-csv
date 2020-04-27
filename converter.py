@@ -107,7 +107,6 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
         # Count the number of total lines
         with io.open(filename, "r", encoding="utf-8") as file:
             for line in file:
-                # if line.strip():
                 line_count += 1
 
         # Convert lines to csv
