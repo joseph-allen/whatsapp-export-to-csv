@@ -8,17 +8,6 @@ from datetime import date
 from tqdm import tqdm
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
 class dateFormats:
     # Define the time formats
     # English
@@ -26,17 +15,8 @@ class dateFormats:
     dateEN = r"""^((\d{1,2})\/(\d{1,2})\/(\d{1,2}))"""
     dateFormatEN = "%d/%m/%y"
     timeFormatEN = "%I:%M:%S %p"
-    # patternEN = dateEN + r"""\,\ \b((1[0-2]|0?[1-9])\:([0-5][0-9])\:([0-5][0-9])\ ([AaPp][Mm]))\:\ (.*)\:\ (.*)"""
     patternEN = dateEN + \
         r"""\,\ \b((1[0-9]|0?[1-9])\:([0-5][0-9])\:([0-5][0-9])\ ([AaPp][Mm]))\:[^:](.+?)\:\ (.*)"""
-
-    # German
-    dateStrDE = "DE"
-    dateDE = r"""^((\d{1,2})\.(\d{1,2})\.(\d{1,2}))"""
-    dateFormatDE = "%d.%m.%y"
-    timeFormatDE = "%H:%M"
-    patternDE = dateDE + \
-        r"""\,\ \b((1[0-9]|0?[1-9])\:([0-5][0-9])()())\ \-\ (.*)\:\ (.*)"""
 
 
 class lastentry:
@@ -55,9 +35,6 @@ def parse(line, verbose, debug):
     pattern = "^((\d{1,2})([\/|\.])(\d{1,2})[\/|\.](\d{1,2}))\,\ (\d{1,2}:\d{1,2})(?::\d{1,2})?\ ?(AM|PM|am|pm)?([\:\ |\ \-\ ][^:])(.+?)\:\ (.*)"
     found = ""
     dataset = ['empty', '', '', '', '', '']
-    # if verbose: print(prefix + line)
-    # if verbose: print(bcolors.FAIL + prefix + line)
-    # Identify the date format in the chat line
 
     if (re.match(re.compile(dateFormats.dateEN, re.VERBOSE), line)):
         # English
@@ -65,34 +42,16 @@ def parse(line, verbose, debug):
         dateLANG = dateFormats.dateEN
         dateFormatLANG = dateFormats.dateFormatEN
         timeFormatLANG = dateFormats.timeFormatEN
-        # pattern = dateFormats.patternEN
         found = dateFormats.dateStrEN
-
-    elif (re.match(re.compile(dateFormats.dateDE, re.VERBOSE), line)):
-        # German
-        dateStr = dateFormats.dateStrDE
-        dateLANG = dateFormats.dateDE
-        dateFormatLANG = dateFormats.dateFormatDE
-        timeFormatLANG = dateFormats.timeFormatDE
-        # pattern = dateFormats.patternDE
-        found = dateFormats.dateStrDE
-
-    elif (re.match(re.compile(r"^[\t ]*\n", re.VERBOSE), line)):
-        # Empty line
-        if debug:
-            print("Empty line removed")
 
     else:
         if debug:
             print("Appending line found")
         newline = (re.match(re.compile(r"^(.*)", re.VERBOSE), line))
 
-        # Create the dataset if commandline argument was to create a new line
-        # TODO if (args.newline):
         if (1):
             dataset = ['new', lastentry.lastdate, lastentry.lasttime,
                        lastentry.lastname, newline.group(0)]
-            # if (verbose | debug): print(dataset)
 
         else:
             # Otherwise make sure it is appended to the existing line
@@ -104,7 +63,6 @@ def parse(line, verbose, debug):
         # Make the match, assign to the groups
         match = re.match(re.compile(pattern, re.VERBOSE), line)
 
-        # TODO Wrong assignment of group 9 25/6/15, 1:42:12 AM: ‎Vishnu Gaud created this group
         if (match and match.group(9) != 'M'):
             # 21/12/19 Date Format
             if (match.group(3) == '/' and match.group(8) == ': '):
@@ -191,7 +149,6 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
 
         ws_counter = 1
 
-    # TODO Append line with buffer before writing
     # Show progress via tqdm
     for line in tqdm(content, total=line_count, ncols=120):
         if (debug and line == ''):
@@ -200,23 +157,12 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
         if (dataset[0] != 'empty'):
 
             # Write to .csv file
-            if str(resultset[0]).endswith('.csv'):
-                csv.write(dataset[1] + ' ' + dataset[2] +
-                          '|' + dataset[3] + '|' + dataset[4] + '\n')
-
-            # Write to .ods file
-            elif str(resultset[0]).endswith('.ods'):
-                ws.write(ws_counter, 0, counter)
-                ws.write(ws_counter, 1, dataset[1] + ' ' + dataset[2])
-                ws.write(ws_counter, 2, dataset[2])
-                ws.write(ws_counter, 3, dataset[3])
-                ws.write(ws_counter, 4, dataset[4])
-                ws_counter += 1
+            csv.write(dataset[1] + ' ' + dataset[2] +
+                      '|' + dataset[3] + '|' + dataset[4] + '\n')
 
         # Print progress
         if line.strip():
             counter += 1
-            # print('Wrote ' + str(counter) + ' lines of ' + str(line_count) + ' lines', end='\r')
 
     print('Wrote ' + str(counter) + ' lines')
 
