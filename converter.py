@@ -136,8 +136,7 @@ def convert(filename, resultset='resultset.csv', verbose=False, debug=False):
         csv = io.open(resultset[0], "w", encoding="utf-8")
 
         # Write headers
-        csv.write(header[0] + '|' + header[1] + '|' + header[2] +
-                  '|' + '\n')
+        csv.write(header[0] + '|' + header[1] + '|' + header[2] + '\n')
 
     elif str(resultset[0]).endswith('.ods'):
         wb = xlwt.Workbook()
